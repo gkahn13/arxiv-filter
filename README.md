@@ -13,7 +13,7 @@ Arxiv filter works by finding all articles that
 2. Are in one of the categories listed in categories.txt
 3. Have at least one of the keywords listed in keywords.txt in either the title, author list, or abstract
 
-You should change categories.txt and keywords.txt based on your interests. (Note: capitalization does not matter.)
+You should change categories.txt and keywords.txt based on your interests. (Note: capitalization does not matter for keywords.)
 
 #### Setup Mailgun
 
