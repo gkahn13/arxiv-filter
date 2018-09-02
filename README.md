@@ -26,6 +26,8 @@ Log in and click on "Domains" in the top menu. One sandbox will already exist, c
 2. Copy the API key into mailgun-api-key.txt
 3. Click on "Manage Authorized Recipients" and add your email account. Also add your email account to mailgun-email-recipient.txt
 
+Note: do not keep your mailgun sandbox or api key on github or any other publicly accessible place. Mailgun will notice it and disable your account.
+
 #### Setup the script
 
 Run the following to install the necessary python libraries:
