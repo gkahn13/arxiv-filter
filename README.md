@@ -40,11 +40,11 @@ $ sudo crontab -e
 ```
 and add the following line
 ```
-5 0 * * * /path/to/arxiv-filter/run.sh
+5 0 * * * /usr/bin/python2 /path/to/arxiv-filter/run.py
 ```
 which will run the script once a day at 12:05am.
 
 If you want to immediately test if the installation works, do
 ```
-$ bash /path/to/arxiv-filter/run.sh
+$ /usr/bin/python2 /path/to/arxiv-filter/run.py
 ```
