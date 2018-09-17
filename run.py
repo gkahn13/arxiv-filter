@@ -15,7 +15,7 @@ class Query(object):
         self.authors = ', '.join(query['authors'])
         self.abstract = query['summary']
         self.date_str = query['published']
-        self.id = query['id']
+        self.id = 'v'.join(query['id'].split('v')[:-1])
         self.categories = [tag['term'] for tag in query['tags']]
 
     @property
@@ -23,7 +23,7 @@ class Query(object):
         curr_time = datetime.now(timezone('GMT'))
         delta_time = curr_time - self.date
         assert delta_time.total_seconds() > 0
-        return delta_time.days < 2
+        return delta_time.days < 8
 
     def __hash__(self):
         return self.id
@@ -46,6 +46,24 @@ class ArxivFilter(object):
         self._mailgun_api_key = mailgun_api_key
         self._mailgun_email_recipient = mailgun_email_recipient
 
+    @property
+    def _previous_arxivs_fname(self):
+        return os.path.join(os.path.dirname(os.path.realpath(__file__)), 'previous_arxivs.txt')
+        
+    def _get_previously_sent_arxivs(self):
+        if os.path.exists(self._previous_arxivs_fname):
+            with open(self._previous_arxivs_fname, 'r') as f:
+                return set(f.read().split('\n'))
+        else:
+            return set()
+
+    def _save_previously_sent_arxivs(self, new_queries):
+        prev_arxivs = list(self._get_previously_sent_arxivs())
+        prev_arxivs += [q.id for q in new_queries]
+        prev_arxivs = list(set(prev_arxivs))
+        with open(self._previous_arxivs_fname, 'w') as f:
+            f.write('\n'.join(prev_arxivs))
+        
     def _get_queries_from_last_day(self, max_results=10):
         queries = []
 
@@ -57,7 +75,7 @@ class ArxivFilter(object):
                 num_category_added += len(new_queries)
                 queries += [q for q in new_queries if q.is_recent]
 
-                if not new_queries[-1].is_recent:
+                if len(new_queries) == 0 or not new_queries[-1].is_recent:
                     break
 
         # get rid of duplicates
@@ -71,6 +89,11 @@ class ArxivFilter(object):
         # sort from most recent to least
         queries = sorted(queries, key=lambda q: (datetime.now(timezone('GMT')) - q.date).total_seconds())
 
+        # filter if previously sent
+        prev_arxivs = self._get_previously_sent_arxivs()
+        queries = [q for q in queries if q.id not in prev_arxivs]
+        self._save_previously_sent_arxivs(queries)
+        
         return queries
 
     def _send_email(self, txt):
