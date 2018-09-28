@@ -50,4 +50,4 @@ If you want to immediately test if the installation works, do
 ```
 $ /usr/bin/python2 /path/to/arxiv-filter/run.py
 ```
-(Note: arxiv filter searches over submissions from the past week and---after filtering---only emails you submission that it has not sent you before. If you want to start from scratch, delete the file previous_arxivs.txt)
+(Note: arxiv filter searches over submissions from the past week and---after filtering---only emails you submissions that it has not sent you before. If you want to start from scratch, delete the file previous_arxivs.txt)
